@@ -1,4 +1,4 @@
-package com.snooper.www.mars.common
+package com.snooper.www.mars.model
 
 enum class CompassPoint {
     N,

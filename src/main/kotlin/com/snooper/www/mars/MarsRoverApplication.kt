@@ -1,10 +1,10 @@
 package com.snooper.www.mars
 
-import com.snooper.www.mars.common.CompassPoint
-import com.snooper.www.mars.common.Instruction
-import com.snooper.www.mars.common.Plateau
-import com.snooper.www.mars.common.Position
-import com.snooper.www.mars.controller.MarsRover
+import com.snooper.www.mars.model.CompassPoint
+import com.snooper.www.mars.model.Instruction
+import com.snooper.www.mars.model.Plateau
+import com.snooper.www.mars.model.Position
+import com.snooper.www.mars.service.MarsRoverService
 
 fun main(args: Array<String>) {
 
@@ -12,7 +12,7 @@ fun main(args: Array<String>) {
         print("Enter Plateau Co-ordinates (in format X Y) > ")
         val inputPlateau = readLine()
         val plateau = readPlateau(inputPlateau)
-        var finalPositions = ArrayList<Position>()
+        val marsRover = MarsRoverService(plateau)
 
         var done = false
         while (!done) {
@@ -25,12 +25,7 @@ fun main(args: Array<String>) {
                 val inputInstruction = readLine()
                 val instructions = readInstructions(inputInstruction)
 
-                if (instructions == null) {
-                    return
-                }
-                val marsRover = MarsRover(plateau, startPosition, instructions)
-                val finalPosition =  marsRover.getFinalPosition()
-                finalPositions.add(finalPosition)
+                val finalPosition =  marsRover.getFinalPosition(startPosition, instructions)
                 print("The Final Position is: "  + finalPosition.x.toString().plus(" ").plus(finalPosition.y).plus(" ").plus(finalPosition.compassPoint).plus("\n"))
             } else {
                 done = true
@@ -64,11 +59,6 @@ private fun readPosition(line: String?) : Position? {
     return null
 }
 
-private fun readInstructions(line: String?) : ArrayList<Instruction>? {
-    var instructions = ArrayList<Instruction>()
-    if (line != null) {
-        line.forEach { instructions.add(Instruction.valueOf(it.toString())) }
-        return instructions
-    }
-    return null
+private fun readInstructions(line: String?) : List<Instruction> {
+    return line?.map { Instruction.valueOf(it.toString()) }.orEmpty()
 }

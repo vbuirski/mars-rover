@@ -1,140 +1,117 @@
 package com.snooper.www.mars.controller
 
-import com.snooper.www.mars.common.CompassPoint
-import com.snooper.www.mars.common.Instruction
-import com.snooper.www.mars.common.Plateau
-import com.snooper.www.mars.common.Position
+import com.snooper.www.mars.model.CompassPoint
+import com.snooper.www.mars.model.Instruction
+import com.snooper.www.mars.model.Plateau
+import com.snooper.www.mars.model.Position
+import com.snooper.www.mars.service.MarsRoverService
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
-
 class MarsRoverTest {
-    val plateau = Plateau(5, 5)
-    val startPosition = Position(1, 2, CompassPoint.N)
-    val instructions = arrayListOf<Instruction>(
-            Instruction.L,
-            Instruction.M,
-            Instruction.L,
-            Instruction.M,
-            Instruction.L,
-            Instruction.M,
-            Instruction.L,
-            Instruction.M,
-            Instruction.M
-    )
+    private val plateau = Plateau(5, 5)
 
-    val expectedFinalPosition = Position(1, 3, CompassPoint.N)
-
-    private var marsRover = MarsRover(plateau, startPosition, instructions)
+    private lateinit var marsRoverService: MarsRoverService
 
     @BeforeEach
-    fun initEach() {
-        val startPosition = Position(1, 1, CompassPoint.N)
-        marsRover = MarsRover(plateau, startPosition, instructions)
+    fun setUp() {
+        marsRoverService = MarsRoverService(plateau)
     }
 
     @Test
     fun whenMovingNorthThenYIsIncremented() {
-        val newPosition = marsRover.move(CompassPoint.N)
+        val position = Position(1, 1, CompassPoint.N)
+        val newPosition = marsRoverService.move(position)
         Assertions.assertEquals(2, newPosition.y)
     }
 
     @Test
     fun whenMovingSouthThenYIsDecremented() {
-        val newPosition = marsRover.move(CompassPoint.S)
+        val position = Position(1, 1, CompassPoint.S)
+        val newPosition = marsRoverService.move(position)
         Assertions.assertEquals(0, newPosition.y)
     }
 
     @Test
     fun whenMovingEastThenXIsIncremented() {
-        val newPosition = marsRover.move(CompassPoint.E)
+        val position = Position(1, 1, CompassPoint.E)
+        val newPosition = marsRoverService.move(position)
         Assertions.assertEquals(2, newPosition.x)
     }
 
     @Test
     fun whenMovingWestThenXIsDecremented() {
-        val newPosition = marsRover.move(CompassPoint.W)
+        val position = Position(1, 1, CompassPoint.W)
+        val newPosition = marsRoverService.move(position)
         Assertions.assertEquals(0, newPosition.x)
     }
 
     @Test
     fun whenTurningLeftFromNorthThenFaceWest() {
-        val newPosition = marsRover.turn(Instruction.L)
+        val position = Position(1, 1, CompassPoint.N)
+        val newPosition = marsRoverService.turn(position, Instruction.L)
         Assertions.assertEquals(CompassPoint.W, newPosition.compassPoint)
     }
 
     @Test
     fun whenTurningRightFromNorthThenFaceEast() {
-        val newPosition = marsRover.turn(Instruction.L)
+        val position = Position(1, 1, CompassPoint.N)
+        val newPosition = marsRoverService.turn(position, Instruction.L)
         Assertions.assertEquals(CompassPoint.W, newPosition.compassPoint)
     }
 
     @Test
     fun whenTurningLeftFromSouthThenFaceEast() {
-
-        val startPosition = Position(1, 1, CompassPoint.S)
-        marsRover = MarsRover(plateau, startPosition, instructions)
-
-        val newPosition = marsRover.turn(Instruction.L)
+        val position = Position(1, 1, CompassPoint.S)
+        val newPosition = marsRoverService.turn(position, Instruction.L)
         Assertions.assertEquals(CompassPoint.E, newPosition.compassPoint)
     }
 
     @Test
     fun whenTurningRightFromSouthThenFaceWest() {
-
-        val startPosition = Position(1, 1, CompassPoint.S)
-        marsRover = MarsRover(plateau, startPosition, instructions)
-
-        val newPosition = marsRover.turn(Instruction.R)
+        val position = Position(1, 1, CompassPoint.S)
+        val newPosition = marsRoverService.turn(position, Instruction.R)
         Assertions.assertEquals(CompassPoint.W, newPosition.compassPoint)
     }
 
     @Test
     fun whenTurningLeftFromEastThenFaceNorth() {
-        val startPosition = Position(1, 1, CompassPoint.E)
-        marsRover = MarsRover(plateau, startPosition, instructions)
-
-        val newPosition = marsRover.turn(Instruction.L)
+        val position = Position(1, 1, CompassPoint.E)
+        val newPosition = marsRoverService.turn(position, Instruction.L)
         Assertions.assertEquals(CompassPoint.N, newPosition.compassPoint)
     }
 
     @Test
     fun whenTurningRightFromEastThenFaceSouth() {
-        val startPosition = Position(1, 1, CompassPoint.E)
-        marsRover = MarsRover(plateau, startPosition, instructions)
-
-        val newPosition = marsRover.turn(Instruction.R)
+        val position = Position(1, 1, CompassPoint.E)
+        val newPosition = marsRoverService.turn(position, Instruction.R)
         Assertions.assertEquals(CompassPoint.S, newPosition.compassPoint)
     }
 
     @Test
     fun whenTurningLeftFromWestThenFaceSouth() {
-        val startPosition = Position(1, 1, CompassPoint.W)
-        marsRover = MarsRover(plateau, startPosition, instructions)
-
-        val newPosition = marsRover.turn(Instruction.L)
+        val position = Position(1, 1, CompassPoint.W)
+        val newPosition = marsRoverService.turn(position, Instruction.L)
         Assertions.assertEquals(CompassPoint.S, newPosition.compassPoint)
     }
 
     @Test
     fun whenTurningRightFromWestThenFaceNorth() {
-        val startPosition = Position(1, 1, CompassPoint.W)
-        marsRover = MarsRover(plateau, startPosition, instructions)
-
-        val newPosition = marsRover.turn(Instruction.R)
+        val position = Position(1, 1, CompassPoint.W)
+        val newPosition = marsRoverService.turn(position, Instruction.R)
         Assertions.assertEquals(CompassPoint.N, newPosition.compassPoint)
     }
 
     @Test
     fun whenCoordinatesAreInRangeThenAllowMove() {
-        val isMoveAllowed = marsRover.isMoveAllowed(1, 2)
+        val isMoveAllowed = marsRoverService.isMoveAllowed(1, 2)
         Assertions.assertEquals(true, isMoveAllowed)
     }
 
     @Test
     fun whenCoordinatesAreGreaterThanBoundaryThenDoNotAllowMove() {
-        val isMoveAllowed = marsRover.isMoveAllowed(2, 1)
+        val isMoveAllowed = marsRoverService.isMoveAllowed(2, 1)
         Assertions.assertEquals(false, isMoveAllowed)
     }
 
@@ -152,8 +129,10 @@ class MarsRoverTest {
                 Instruction.M
         )
         val startPosition = Position(1, 2, CompassPoint.N)
-        marsRover = MarsRover(plateau, startPosition, instructions)
-        val finalPosition = marsRover.getFinalPosition()
+        val expectedFinalPosition = Position(1, 3, CompassPoint.N)
+
+        val finalPosition = marsRoverService.getFinalPosition(startPosition, instructions)
+
         Assertions.assertEquals(expectedFinalPosition.x, finalPosition.x)
         Assertions.assertEquals(expectedFinalPosition.y, finalPosition.y)
         Assertions.assertEquals(expectedFinalPosition.compassPoint, finalPosition.compassPoint)

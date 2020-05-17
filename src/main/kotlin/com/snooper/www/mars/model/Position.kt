@@ -1,4 +1,4 @@
-package com.snooper.www.mars.common
+package com.snooper.www.mars.model
 
 class Position(val x: Int = 0,
                val y: Int = 0,
