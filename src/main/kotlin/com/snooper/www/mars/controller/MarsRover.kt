@@ -7,7 +7,7 @@ import com.snooper.www.mars.common.Position
 
 class MarsRover(
         val plateau: Plateau,
-        startPosition: Position,
+        val startPosition: Position,
         val instructions: ArrayList<Instruction>) {
 
     var x = startPosition.x
