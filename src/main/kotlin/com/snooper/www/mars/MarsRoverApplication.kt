@@ -23,11 +23,13 @@ fun main(args: Array<String>) {
             println(finalPosition.x.toString().plus(" ").plus(finalPosition.y).plus(" ").plus(finalPosition.compassPoint))
         }
     } catch (e: NumberFormatException) {
-        println("Invalid Input File - remove any missing lines")
+        println("Invalid Input File [" + e.message + "]")
     } catch (e: IllegalArgumentException) {
-        println("Invalid Input File - verify list of instructions")
+        println("Invalid Input File [" + e.message + "]")
     } catch (e: IndexOutOfBoundsException) {
-        println("Invalid Input File - verify each starting position has a corresponding list of instructions")
+        println("Invalid Input File [" + e.message + "]")
+    } catch (e: Exception) {
+        println("General Exception [" + e.message + "]")
     }
 }
 

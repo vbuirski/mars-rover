@@ -1,10 +1,9 @@
-package test.kotlin.com.snooper.www.mars.controller
+package com.snooper.www.mars.controller
 
 import com.snooper.www.mars.common.CompassPoint
 import com.snooper.www.mars.common.Instruction
 import com.snooper.www.mars.common.Plateau
 import com.snooper.www.mars.common.Position
-import com.snooper.www.mars.controller.MarsRover
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -24,6 +23,8 @@ class MarsRoverTest {
             Instruction.M,
             Instruction.M
     )
+
+    val expectedFinalPosition = Position(1, 3, CompassPoint.N)
 
     private var marsRover = MarsRover(plateau, startPosition, instructions)
 
@@ -123,5 +124,38 @@ class MarsRoverTest {
 
         val newPosition = marsRover.turn(Instruction.R)
         Assertions.assertEquals(CompassPoint.N, newPosition.compassPoint)
+    }
+
+    @Test
+    fun whenCoordinatesAreInRangeThenAllowMove() {
+        val isMoveAllowed = marsRover.isMoveAllowed(1, 2)
+        Assertions.assertEquals(true, isMoveAllowed)
+    }
+
+    @Test
+    fun whenCoordinatesAreGreaterThanBoundaryThenDoNotAllowMove() {
+        val isMoveAllowed = marsRover.isMoveAllowed(2, 1)
+        Assertions.assertEquals(false, isMoveAllowed)
+    }
+
+    @Test
+    fun whenGivenInstructionsThenGetFinalPosition() {
+        val instructions = arrayListOf<Instruction>(
+                Instruction.L,
+                Instruction.M,
+                Instruction.L,
+                Instruction.M,
+                Instruction.L,
+                Instruction.M,
+                Instruction.L,
+                Instruction.M,
+                Instruction.M
+        )
+        val startPosition = Position(1, 2, CompassPoint.N)
+        marsRover = MarsRover(plateau, startPosition, instructions)
+        val finalPosition = marsRover.getFinalPosition()
+        Assertions.assertEquals(expectedFinalPosition.x, finalPosition.x)
+        Assertions.assertEquals(expectedFinalPosition.y, finalPosition.y)
+        Assertions.assertEquals(expectedFinalPosition.compassPoint, finalPosition.compassPoint)
     }
 }
